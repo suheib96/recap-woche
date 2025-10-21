@@ -1,9 +1,29 @@
 const express = require("express");
 const cors = require("cors");
+const { Pool } = require("pg");
 
 const app = express();
-
 app.use(express.json());
+
+
+const pool = new Pool({
+  user: "postgres",
+  host: "localhost",
+  database: "meinedatabase",
+  password: "mysecretpassword",
+  port: 8044,
+});
+
+
+async function initDB() {
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS users (
+      id SERIAL PRIMARY KEY,
+      vorname VARCHAR(255) NOT NULL,
+      nachname VARCHAR(255) NOT NULL,
+      alter INT NOT NULL
+    )`)
+}
 
 const user = [
   {
@@ -40,4 +60,5 @@ app.post("/user", (req,res) => {
     user.push(newUser);
     res.json(newUser);
 })
-app.listen(8000);
+
+initDB().then(() => {app.listen(8000)});
