@@ -5,15 +5,13 @@ const { Pool } = require("pg");
 const app = express();
 app.use(express.json());
 
-
 const pool = new Pool({
   user: "postgres",
-  host: "localhost",
+  host: "meineDatenbank",
   database: "meinedatabase",
   password: "mysecretpassword",
-  port: 8044,
+  port: 5432,
 });
-
 
 async function initDB() {
   await pool.query(`
@@ -22,43 +20,67 @@ async function initDB() {
       vorname VARCHAR(255) NOT NULL,
       nachname VARCHAR(255) NOT NULL,
       alter INT NOT NULL
-    )`)
+    )`);
 }
-
-const user = [
-  {
-    id: 1,
-    vorname: "Max",
-    nachname: "Mustermann",
-    alter: 25,
-  },
-  {
-    id: 2,
-    vorname: "Suheib",
-    nachname: "Marzouka",
-    alter: 29,
-  },
-];
 
 app.get("/", (req, res) => {
   res.send("Hallo Welt, API funktioniert!");
 });
 
-app.get("/user" , (req,res) => {
-    res.json(user)
-})
+app.get("/user", async (req, res) => {
+  await pool.query("SELECT * FROM users").then((result) => {
+    res.json(result.rows);
+  });
+});
 
-app.get("/user/:id", (req,res) => {
-    const userId = req.params.id;
-    // console.log(userId)
-    const userById = user.find((u) => u.id == userId);
-    res.json(userById);})
+app.get("/user/:id", async (req, res) => {
+  const userId = req.params.id;
+  await pool
+    .query(`SELECT * FROM users WHERE id = $1`, [userId])
+    .then((result) => {
+      res.json(result.rows);
+    });
+});
 
+app.post("/user", async (req, res) => {
+  const newUser = req.body;
+  await pool
+    .query("INSERT INTO users (vorname,nachname,alter) VALUES ($1,$2,$3)", [
+      newUser.vorname,
+      newUser.nachname,
+      newUser.alter,
+    ])
+    .then((result) => {
+      res.json({
+        message: "User " + newUser.vorname + " erfolgreich hinzugefügt",
+      });
+    });
+});
 
-app.post("/user", (req,res) => {
-    const newUser = req.body;
-    user.push(newUser);
-    res.json(newUser);
-})
+app.put("/user/:id", async (req, res) => {
+  const userId = req.params.id;
+  const updatedUser = req.body;
+  await pool
+    .query(
+      `UPDATE users SET vorname = $1, nachname = $2, alter = $3 WHERE id = $4`,
+      [updatedUser.vorname, updatedUser.nachname, updatedUser.alter, userId]
+    )
+    .then((result) => {
+      res.json({
+        message: "User " + updatedUser.vorname + " erfolgreich geupdated",
+      });
+    });
+});
 
-initDB().then(() => {app.listen(8000)});
+app.delete("/user/:id", async (req, res) => {
+  const userId = req.params.id;
+  await pool
+    .query(`DELETE FROM users WHERE id = $1`, [userId])
+    .then((result) => {
+      res.json({ message: "User " + userId + " erfolgreich gelöscht" });
+    });
+});
+
+initDB().then(() => {
+  app.listen(8000);
+});

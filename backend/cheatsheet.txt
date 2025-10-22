@@ -1,0 +1,11 @@
+docker run --name meineDatenbank -p 8044:5432  -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=mysecretpassword -e POSTGRES_DB=meinedatabase -d postgres
+docker run --name meinBackend --network demo-backend-db-network -p 8001:8000 -d  backendapp
+
+docker network create demo-backend-datanbank-netzwerk
+
+docker network connect demo-backend-datanbank-netzwerk meineDatenbank
+docker network connect demo-backend-datanbank-netzwerk meinBackend
+
+oder 
+
+--network in den Docker Befehl mit angeben
