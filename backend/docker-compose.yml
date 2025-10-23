@@ -20,7 +20,7 @@ services:
       - POSTGRES_PASSWORD=mysecretpassword
       - POSTGRES_DB=meinedatabase
     volumes:
-      - postgres_db_volume:/var/lib/postgresql/data
+      - postgres_db_volume:/var/lib/postgresql
     networks:
       - docker-compose-backend-db-net
     healthcheck:
