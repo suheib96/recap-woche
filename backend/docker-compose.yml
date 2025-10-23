@@ -1,0 +1,39 @@
+services:
+  backend:
+    build: .
+    ports:
+      - 8005:8000
+    networks:
+      - docker-compose-backend-db-net
+    depends_on:
+      postgres_db:
+        condition: service_healthy
+
+  
+  postgres_db:
+    image: postgres
+    container_name: meineDatenbank
+    ports:
+      - 8044:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=mysecretpassword
+      - POSTGRES_DB=meinedatabase
+    volumes:
+      - postgres_db_volume:/var/lib/postgresql/data
+    networks:
+      - docker-compose-backend-db-net
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres", "-h","localhost"]
+      interval: 2s
+      timeout: 5s
+      retries: 5      
+
+
+networks:
+  docker-compose-backend-db-net:
+
+volumes:
+  postgres_db_volume:
+  
+    
