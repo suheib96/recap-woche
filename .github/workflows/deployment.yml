@@ -25,6 +25,7 @@ jobs:
                   sudo mkdir -p $DOCKER_CONFIG/cli-plugins
                   sudo curl -SL https://github.com/docker/compose/releases/download/v2.40.1/docker-compose-linux-x86_64 -o $DOCKER_CONFIG/cli-plugins/docker-compose
                   sudo chmod +x $DOCKER_CONFIG/cli-plugins/docker-compose
+                  sudo usermod -aG docker ubuntu
                   "
                 
             - name: Copy backend directory to ec2
