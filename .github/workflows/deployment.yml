@@ -37,5 +37,5 @@ jobs:
               run: |
                   ssh -i ~/.ssh/meinPrivateKey ubuntu@${{ secrets.EC2_IP}} "
                   cd app
-                  docker compose up -d
+                  docker compose up -d --build
                   "
