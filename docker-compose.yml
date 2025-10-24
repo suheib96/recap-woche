@@ -1,17 +1,19 @@
 services:
   backend:
-    build: .
+    container_name: backendapp
+    build: ./backend
     ports:
       - 8005:8000
     networks:
       - docker-compose-backend-db-net
+      - docker-compose-frontend-backend-net 
     depends_on:
       postgres_db:
         condition: service_healthy
 
   
   postgres_db:
-    image: postgres
+    image: postgres:18
     container_name: meineDatenbank
     ports:
       - 8044:5432
@@ -29,9 +31,18 @@ services:
       timeout: 5s
       retries: 5      
 
+  frontend:
+    container_name: frontendapp
+    build: ./frontend
+    ports:
+      - 8080:80
+    networks:
+      - docker-compose-frontend-backend-net
+
 
 networks:
   docker-compose-backend-db-net:
+  docker-compose-frontend-backend-net:
 
 volumes:
   postgres_db_volume:

@@ -30,12 +30,12 @@ jobs:
                 
             - name: Copy backend directory to ec2
               run: |
-                  ssh -i ~/.ssh/meinPrivateKey ubuntu@${{ secrets.EC2_IP}} "mkdir -p backend"
-                  scp -i ~/.ssh/meinPrivateKey backend/* ubuntu@${{ secrets.EC2_IP}}:/home/ubuntu/backend      
+                  ssh -i ~/.ssh/meinPrivateKey ubuntu@${{ secrets.EC2_IP}} "mkdir -p app"
+                  scp -i ~/.ssh/meinPrivateKey ./* ubuntu@${{ secrets.EC2_IP}}:/home/ubuntu/app      
 
             - name: Docker compose up
               run: |
                   ssh -i ~/.ssh/meinPrivateKey ubuntu@${{ secrets.EC2_IP}} "
-                  cd backend
+                  cd app
                   docker compose up -d
                   "

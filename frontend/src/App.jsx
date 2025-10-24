@@ -26,14 +26,21 @@ function App() {
     }).then(() => fetchAllUsers());
   }
 
-  function handleSubmit(){
+  function handleSubmit(event){
+    event.preventDefault();
     fetch("http://localhost:8005/user", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(newUser),
-    }).then(() => fetchAllUsers());
+    }).then(() => {
+      setNewUser({
+        vorname: "",
+        nachname: "",
+        alter: 0
+      })
+      fetchAllUsers()});
   }
 
   function handleInputChange(event){
