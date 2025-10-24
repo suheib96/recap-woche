@@ -12,7 +12,7 @@ function App() {
   });
 
   function fetchAllUsers() {
-    fetch("http://localhost:8005/user")
+    fetch("/user")
       .then((response) => response.json())
       .then((data) => setUsers(data));
   }
@@ -21,14 +21,14 @@ function App() {
   }, []);
 
   function handleDelete(id) {
-    fetch(`http://localhost:8005/user/${id}`, {
+    fetch(`/user/${id}`, {
       method: "DELETE",
     }).then(() => fetchAllUsers());
   }
 
   function handleSubmit(event){
     event.preventDefault();
-    fetch("http://localhost:8005/user", {
+    fetch("/user", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
