@@ -4,6 +4,7 @@ const { Pool } = require("pg");
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 
 const pool = new Pool({
   user: "postgres",
